@@ -31,9 +31,35 @@ forge verify-contract --chain-id 11155111 --etherscan-api-key $ETHERSCAN_API_KEY
 ### Cast 使用
 
 ```shell
+cast rpc eth_blockNumber --rpc-url=$ETH_RPC_URL
+cast --to-dec 0x1389107 # 转换为十进制
+
+cast chain --rpc-url=$ETH_RPC_URL #使用的链
+
+cast block-number # 十进制的块儿高
+cast block 20484443 # 查看块儿信息
+
 cast balance <ACCOUNT_ADDRESS> --rpc-url <YOUR_RPC_URL> # 查询账户余额
 cast send <TO_ADDRESS> --value <AMOUNT_IN_WEI> --rpc-url <YOUR_RPC_URL> --private-key <YOUR_PRIVATE_KEY> # 发送交易
 cast call <CONTRACT_ADDRESS> "functionName()" --rpc-url <YOUR_RPC_URL> # 调用合约函数
+```
+
+```shell
+cast call 0xfa7f72D685EAa4753a028b0eE1C7Ef1C78dC8C24 "admin()"  --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL
+
+cast call 0xfa7f72D685EAa4753a028b0eE1C7Ef1C78dC8C24 "admin()"  --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL
+
+cast send 0xfa7f72D685EAa4753a028b0eE1C7Ef1C78dC8C24 "setData(uint256)" 111 --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL
+
+```
+
+
+
+```
+# 通过ABI反向生成interface
+cast interface ./pepe.abi 
+# 直接通过合约生成
+cast interface 0x4dFae3690b93c47470b03036A17B23C1Be05127C
 ```
 
 ### 安装库

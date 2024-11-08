@@ -29,8 +29,8 @@ contract SelfDestructScript is Script{
         TransparentUpgradeableProxy proxySelfDestuct = new TransparentUpgradeableProxy(
             address(selfDestuct), // 被代理合约
             address(deployAddmin), // 超级管理员
-//            abi.encodeWithSelector(SelfDestruct.initialize.selector, depolyerAddress, depolyerAddress)
-            bytes("")
+            abi.encodeWithSelector(SelfDestruct.initialize.selector, depolyerAddress, depolyerAddress)
+//            bytes("") // 没有init时
         );
 
         console2.log("SelfDestruct contract address:", address(proxySelfDestuct));
@@ -38,5 +38,10 @@ contract SelfDestructScript is Script{
         vm.stopBroadcast();
     }
 }
+
+
+//the deploy address: 0x43b8E86fDdE29197988C63367c446Ff330f1De4f
+//SelfDestruct contract address: 0xfa7f72D685EAa4753a028b0eE1C7Ef1C78dC8C24
+
 
 
