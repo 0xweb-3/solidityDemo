@@ -41,7 +41,8 @@ contract SelfDestructScript is Script{
 
 
 //the deploy address: 0x43b8E86fDdE29197988C63367c446Ff330f1De4f
-//SelfDestruct contract address: 0xfa7f72D685EAa4753a028b0eE1C7Ef1C78dC8C24
+//SelfDestruct contract address: 0x70E0152Ba46D59BCaB31eDf1BC86A87Ba331e6f2
+
 
 
 

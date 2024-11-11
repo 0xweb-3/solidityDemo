@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
 import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
@@ -33,7 +34,7 @@ contract SelfDestruct is Initializable, AccessControlUpgradeable, ReentrancyGuar
         admin = payable(msg.sender);
     }
 
-    function close() public onlyAdmin() {
+    function close() public onlyAdmin {
         selfdestruct(admin);
     }
 }

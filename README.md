@@ -45,12 +45,14 @@ cast call <CONTRACT_ADDRESS> "functionName()" --rpc-url <YOUR_RPC_URL> # 调用�
 ```
 
 ```shell
-cast call 0xfa7f72D685EAa4753a028b0eE1C7Ef1C78dC8C24 "admin()"  --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL
+cast call 0x70E0152Ba46D59BCaB31eDf1BC86A87Ba331e6f2 "admin()"  --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL
 
-cast call 0xfa7f72D685EAa4753a028b0eE1C7Ef1C78dC8C24 "admin()"  --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL
+cast call 0x70E0152Ba46D59BCaB31eDf1BC86A87Ba331e6f2 "admin()"  --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL
 
-cast send 0xfa7f72D685EAa4753a028b0eE1C7Ef1C78dC8C24 "setData(uint256)" 111 --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL
+cast send 0x70E0152Ba46D59BCaB31eDf1BC86A87Ba331e6f2 "setData(uint256)" 111 --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL
 
+cast send 0x70E0152Ba46D59BCaB31eDf1BC86A87Ba331e6f2 "close()" --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL # 调用自毁
+ 
 ```
 
 
@@ -72,6 +74,10 @@ forge install foundry-rs/forge-std --no-commit
 forge remappings
 forge remappings > remappings.txt
 ```
+
+
+
+
 
 
 
