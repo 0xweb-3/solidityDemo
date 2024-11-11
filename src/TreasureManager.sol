@@ -17,6 +17,8 @@ AccessControlUpgradeable, //权限控制
 ReentrancyGuardUpgradeable, // 防止重入
 OwnableUpgradeable, // 合约所有权
 ITreasureManager {
+    // 更新合约时 以下数据槽位不能乱
+    using SafeERC20 for IERC20;
 
     // ETH地址
     address public constant ethAddress = address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
@@ -77,15 +79,11 @@ ITreasureManager {
     function initialize(address _initialOwner, address _treasureManager, address _withdrawManager) public initializer {
         treasureManager = _treasureManager;
         withdrawManager = _withdrawManager;
-        _treasureManager(_initialOwner); // 合约权限转移
-    }
-
-    receive() external payable {
-        depositETH();
+        _transferOwnership(_initialOwner); // 合约权限转移
     }
 
     // 接收ETH
-    function DepositEth() external payable returns (bool) {
+    function depositEth() public payable  returns (bool) {
         tokenBalances[ethAddress] += msg.value;
         emit DepositToken(
             ethAddress,
@@ -95,8 +93,12 @@ ITreasureManager {
         return true;
     }
 
+    receive() external payable {
+        depositEth();
+    }
+
     // 接收ERC-20
-    function DepositErc20(IERC20 tokenAddress, uint256 amount) external returns (bool){
+    function DepositErc20(IERC20 tokenAddress, uint256 amount) public returns (bool){
         tokenAddress.safeTransferFrom(msg.sender, address(this), amount);
         tokenBalances[address(tokenAddress)] += amount;
         emit DepositToken(address(tokenAddress), msg.sender, amount);
@@ -112,17 +114,17 @@ ITreasureManager {
 
     // cliam奖励的代币
     function cliamToken(IERC20 tokenAddress) external {
-        require(tokenAddress != address(0), "Invalid token address");
-        uint256 rewardAmount = userRewardAmounts[msg.sender][tokenAddress];
+        require(address(tokenAddress) != address(0), "Invalid token address");
+        uint256 rewardAmount = userRewardAmounts[msg.sender][address(tokenAddress)];
         require(rewardAmount > 0, "No reward available");
-        if (tokenAddress == ethAddress) {
+        if (address(tokenAddress) == ethAddress) {
             (bool success,) = msg.sender.call{value: rewardAmount}("");
             require(success, "ETH transfer failed");
         } else {
             IERC20(tokenAddress).safeTransfer(msg.sender, rewardAmount);
         }
-        userRewardAmounts[msg.sender][tokenAddress] = 0;
-        tokenBalances[tokenAddress] -= rewardAmount;
+        userRewardAmounts[msg.sender][address(tokenAddress)] = 0;
+        tokenBalances[address(tokenAddress)] -= rewardAmount;
     }
 
     // cliam所有代币
@@ -137,7 +139,7 @@ ITreasureManager {
                 } else {
                     IERC20(tokenAddress).safeTransfer(msg.sender, rewardAmount);
                 }
-                userRewardAmounts[msg.sender][tokenAddress] = 0; // 奖励计数置0
+                userRewardAmounts[msg.sender][address(tokenAddress)] = 0; // 奖励计数置0
                 tokenBalances[tokenAddress] -= rewardAmount; // 减去总代币数量
             }
         }
@@ -161,7 +163,7 @@ ITreasureManager {
     }
 
     // 提取erc-20
-    function WithdrawErc20(IERC20 tokenAddress, uint256 amount, address toAddress) external onlyWithdrawManager returns (bool){
+    function WithdrawErc20(IERC20 tokenAddress, uint256 amount) external onlyWithdrawManager returns (bool){
         require(tokenBalances[address(tokenAddress)] >= amount, "Insufficient token balance in contract");
         IERC20(tokenAddress).safeTransfer(withdrawManager, amount);
         tokenBalances[address(tokenAddress)] -= amount;
@@ -174,5 +176,28 @@ ITreasureManager {
         return true;
     }
 
+    // 白名单
+    function setTokenWhiteList(address tokenAddress) external onlyTreasureManager {
+        if (tokenAddress == address(0)) {
+            revert IsZeroAddress();
+        }
+        tokenWhiteList.push(tokenAddress);
+    }
+
+    function getTokenWhiteList() external view returns (address[] memory){
+        return tokenWhiteList;
+    }
+
+    // 设置提现管理员
+    function setWithdrawManager(address _withdrawManager) external onlyOwner {
+        withdrawManager = _withdrawManager;
+        emit WithdrawManagerUpdate(
+            withdrawManager
+        );
+    }
+
+    function queryRewards(address _tokenAddress) external view returns (uint256){
+        return userRewardAmounts[msg.sender][_tokenAddress];
+    }
 
 }

@@ -5,14 +5,14 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 interface ITreasureManager {
     // 接收ETH
-    function DepositEth() external payable returns (bool);
+    function depositEth() external payable returns (bool);
     // 接受ERC-20充值
     function DepositErc20(IERC20 tokenAddress, uint256 amount) external returns (bool);
 
     // 提现ETH
     function WithdrawETH(address payable toAddress, uint256 amount) external returns (bool);
     // 提现ERC-20
-    function WithdrawErc20(IERC20 tokenAddress, uint256 amount, address toAddress) external returns (bool);
+    function WithdrawErc20(IERC20 tokenAddress, uint256 amount) external returns (bool);
 
     // 奖励的资金
     function grantRewards(IERC20 tokenAddress, address granterAddress, uint256 amount) external;
