@@ -1,4 +1,153 @@
 # openzeppelin常用包
+
+## openzeppelin-contracts与openzeppelin-contracts-upgradeable
+
+**openzeppelin-contracts**
+
+用于部署普通的不可升级合约。一旦部署后，合约逻辑和数据都无法修改。单次部署的简单代币。不需要更新逻辑的智能合约。
+
+**openzeppelin-contracts-upgradeable **
+
+用于部署可升级的合约。专为可升级合约设计，兼容代理模式（Proxy Pattern）。将逻辑与存储分离，以支持后续升级。需要频繁更新的复杂项目（如去中心化交易所、DAO、协议合约）。
+
+## 功能模块
+
+### **access：权限控制模块**
+
+**描述**：用于管理合约的权限机制，提供角色管理、访问限制等功能。
+
+主要组件：	
+
+* **AccessControlUpgradeable**：基于角色的权限控制系统，可自定义角色和权限继承关系。
+
+- **OwnableUpgradeable**：单所有者权限控制模型，合约默认部署者为所有者，可转移所有权。
+
+**适用场景**：治理权限、操作权限分配（如管理者、操作员）。
+
+### finance：金融模块
+
+**描述**：包含与资金处理相关的工具，支持分账和延迟支付等功能。
+
+**主要组件**：
+
+- **PaymentSplitterUpgradeable**：支持多个地址按比例分账的支付合约。
+- **PullPaymentUpgradeable**：提供安全的异步支付机制，防止重入攻击。
+
+**适用场景**：收入分账（如版税分配）、安全支付（防止资金被恶意提取）。
+
+### governance：治理模块库
+
+**描述**：用于支持去中心化治理功能的模块。
+
+**主要组件**：
+
+- **GovernorUpgradeable**：治理核心模块，支持投票和决议功能。
+- **TimelockControllerUpgradeable**：时间锁控制器，用于延迟执行治理决议。
+
+**适用场景**：DAO 组织治理、链上协议治理。
+
+### interfaces：接口
+
+**描述**：包含所有模块的接口定义。
+
+**特点**：
+
+- 定义了标准化的接口（如 ERC20、ERC721 等），便于与其他合约交互。
+- 轻量级实现，无具体逻辑。
+
+**适用场景**：标准合约交互（如钱包、交易所）。
+
+### metatx：MetaTx 相关协议
+
+**描述**：支持元交易（Meta-Transaction），允许第三方支付 Gas 费用。
+
+**主要组件**：
+
+- **ERC2771ContextUpgradeable**：支持 EIP-2771 标准的元交易上下文，用于实现 Gasless Transactions。
+
+**适用场景**：dApp 提供用户免 Gas 体验、提升用户友好性。
+
+### mocks：测试用 Mocks 合约
+
+**描述**：用于单元测试的模拟合约，方便模拟真实场景。
+
+**功能**：
+
+- 包含各种标准合约的可调试实现（如 ERC20、ERC721）。
+- 模拟复杂场景（如权限管理、事件触发）。
+
+**适用场景**：测试合约功能、验证依赖模块。
+
+### proxy：代理模式及升级相关
+
+**描述**：提供代理模式的实现和升级支持。
+
+**主要组件**：
+
+- UUPSUpgradeable：
+  - 基于 UUPS（Universal Upgradeable Proxy Standard）的升级代理模式。
+  - 节约 Gas 开销，逻辑合约可以直接包含升级逻辑。
+  - 需实现 `_authorizeUpgrade` 函数以限制升级权限。
+- Initializable：
+  - 初始化工具，用于替代构造函数。
+  - 确保初始化函数只能调用一次。
+
+**适用场景**：可升级合约部署和管理。
+
+### token：代币相关
+
+#### ERC20
+
+标准功能：支持可升级版的 ERC20 标准代币。
+
+扩展功能：
+
+- SnapshotUpgradeable：拍摄代币持有快照。
+- PermitUpgradeable：支持 EIP-2612 的签名许可。
+
+#### ERC721
+
+标准功能：支持可升级版的 NFT（ERC721）标准。
+
+扩展功能：
+
+- EnumerableUpgradeable：支持枚举功能。
+- URIStorageUpgradeable：动态更新 URI 数据。
+
+#### ERC1155
+
+标准功能：支持可升级版的多代币标准（ERC1155）。
+
+扩展功能：
+
+- SupplyUpgradeable：管理代币供应量。
+
+### utils：工具模块
+
+**ContextUpgradeable**
+
+- 提供当前调用上下文（`msg.sender` 和 `msg.data`），适用于可升级合约。
+
+**MulticallUpgradeable**
+
+- 支持单次调用中批量执行多个函数，提高 Gas 效率。
+
+**NoncesUpgradeable**
+
+- 管理用户 Nonce，用于防止交易重放攻击。
+
+**PausableUpgradeable**
+
+- **描述**：支持合约暂停和恢复功能。
+- **适用场景**：安全紧急情况下的暂停操作（如冻结资产）。
+
+**ReentrancyGuardUpgradeable**
+
+- **描述**：防止重入攻击的保护机制。
+- **适用场景**：确保合约的调用逻辑不被重复执行，保护资金安全。
+
+
+
 ## Initializable.sol
 `@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol` 是 OpenZeppelin 提供的一个用于**初始化可升级合约**的库。由于可升级合约不支持构造函数的初始化，`Initializable` 合约模块提供了一种替代方案，用于在合约部署或代理合约中执行初始化逻辑。
 

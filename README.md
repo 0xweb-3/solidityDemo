@@ -22,11 +22,12 @@ forge verify-contract --chain-id <chain_id> --etherscan-api-key <your_etherscan_
 forge verify-contract --chain-id 11155111 --etherscan-api-key $ETHERSCAN_API_KEY 0x2c4d7e88821B6e90ae5c6ddbA08f5D1d74cc5e51 ./cache/solidity-files-cache.json
 
 ```
+
 参数说明：
+
 * <chain_id>：链的 ID，例如 Ethereum 为 1，Sepolia 为 11155111。
 * <contract_address>：合约的部署地址。
 * <path_to_source_code>：合约源文件的路径。
-
 
 ### Cast 使用
 
@@ -54,8 +55,6 @@ cast send 0x70E0152Ba46D59BCaB31eDf1BC86A87Ba331e6f2 "setData(uint256)" 111 --pr
 cast send 0x70E0152Ba46D59BCaB31eDf1BC86A87Ba331e6f2 "close()" --private-key $PRIVATE_KEY --rpc-url $ETH_RPC_URL # 调用自毁
  
 ```
-
-
 
 ```
 # 通过ABI反向生成interface
